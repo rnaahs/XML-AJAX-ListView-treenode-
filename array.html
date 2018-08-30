@@ -1,0 +1,86 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="style.css">
+<title>Array</title>
+</head>
+<header><h1>A Clickable Product Category (Tree) Using XML/AJAX</h1></header>
+<body>
+<article>
+<h1>Get Array<hr></h1>
+<div class="btn-group">  
+  <button onclick="window.location.href='index.html'">Home</button>
+  <button class="active" onclick="window.location.href='array.html'">Load array</button>
+  <button onclick="window.location.href='treeview.html'">Load treeview</button>
+</div>
+<div class="tabBody">
+<h2>Click button below to get the array of the xml files</h2>
+<button id="load-doc">Get Arrays</button>
+<br><br>
+<ol type='I' id="array"></ol>
+<script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+<script>
+        var loadCategories = $.ajax({
+            type: "GET",
+            dataType: "xml",
+            url: "categories.xml",
+        });
+        var loadProducts = $.ajax({
+            type: "GET",
+            dataType: "xml",
+            url: "products.xml",
+        });
+
+        var categories = [];
+        var products = [];
+		// Load ajax
+        $.when(loadCategories, loadProducts).done(function(resCategories, resProducts) {            
+            
+            $(resCategories[0]).find("Categories").each(function() {
+                categories.push({
+                    id: this.children[0].innerHTML,
+                    name: this.children[1].innerHTML.trim(),
+                    description: this.children[2].innerHTML.trim()
+                });
+            });
+
+            $(resProducts[0]).find("Products").each(function() {
+                products.push({
+                    id: this.children[0].innerHTML,
+                    name: this.children[1].innerHTML.trim(),
+                    categoryID: this.children[2].innerHTML,
+                    quantityPerUnit: this.children[3].innerHTML.trim(),
+                    unitPrice: this.children[4].innerHTML
+				});
+			});
+		});		
+		
+$("#load-doc").click(function(event) {                
+		 // Data to show on the list						
+			var list = "<b>Product List</b><hr /><br>";
+            for (var i = 0; i < categories.length; ++i) {
+                var category = categories[i];
+					list += "<li onclick='display("+i+")'>"+category.name+"</li><ol type='a'>";					
+                for (var j = 0; j < products.length; ++j) {
+                    var product = products[j];
+                    if (product.categoryID == category.id) {
+					list += "<li onclick='display2("+j+")'>"+product.name+"</li>";					
+                    }
+                }
+			list+="</ol>"
+        }					
+	document.getElementById("array").innerHTML = list;
+});
+
+function display(counter){
+	alert(categories[counter].name + "\n\n" + categories[counter].description);
+}
+function display2(counter){
+	alert(products[counter].name + "\n\nPrice: " + products[counter].unitPrice + "\nDescription: " + products[counter].quantityPerUnit);
+}
+</script>
+</div>
+</article>
+<footer>
+<h2 title="student no. 12627360">&#169; Il Sun Choi 2018</h2>
+</footer>
+</body>
+</html> 

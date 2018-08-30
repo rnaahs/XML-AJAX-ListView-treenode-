@@ -1,0 +1,92 @@
+header{
+	padding: 1em;
+	color: white;
+	background-color:#a9a9a9;
+	clear: left;
+	text-align: center;
+}
+body {	
+	width:100%;
+	margin: 0;
+	background-color:#a9a9a9;
+}
+article {
+    color:white;
+    background-color:#6d7993;
+    padding: 2em;
+    overflow:hidden;
+}
+footer{
+	padding: 1em;
+	color:white;
+	background-color:#6d7993;
+	clear: left;
+	text-align:center;
+}
+label{
+	font-size: 18px;	
+	font-weight: bold;
+}
+div.tabBody {			
+	position: relative;	
+	width:inherit;
+	height:auto;
+	float: top;
+	background-color: #d5d5d5;
+	padding: 2em;	
+	color:black;
+	margin-left:168px;
+}
+.firstcol{
+	width: 130px;
+}
+#weight {
+	font-weight: bold;
+}
+table,th,td {
+  border : 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+.btn-group{	
+	float: left;
+	width: 150px;
+	height: 200px;
+}
+.btn-group button {    
+    font-size:15px;    
+    color: black;
+    text-align: center;
+    padding:15px 24px;    
+    transition:0.3s;	
+    background-color:#9099a2;
+	width: 100%;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.btn-group button:not(:last-child) {    
+	border-bottom: none;
+}
+
+.btn-group button:hover {
+    color:white;
+    background-color:#6d7993;
+}
+.btn-group button.active:hover {
+    color:white;
+    background-color:#6d7993;
+}
+.btn-group button.active{
+    font-size:15px;
+    color: black;
+    text-align: center;
+    padding:15px 24px;    
+    transition:0.3s;	
+    background-color:#a9a9a9;
+	width: 100%;
+	cursor: pointer;
+	display: inline-block;
+}

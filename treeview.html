@@ -1,0 +1,148 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">   
+
+    <script src="//code.jquery.com/jquery-1.12.1.min.js" type="text/javascript"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link href="https://cdn.jsdelivr.net/jquery.fancytree/2.22.4/skin-awesome/ui.fancytree.min.css" type="text/css" rel="stylesheet" />
+    <script src="//cdn.jsdelivr.net/jquery.fancytree/2/jquery.fancytree-all.min.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css">
+    <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <script>	
+$(function() {
+
+    $("#load-data").click(function(event) {                       
+	
+        var loadCategories = $.ajax({
+            type: "GET",
+            dataType: "xml",
+            url: "categories.xml",
+        });
+        var loadProducts = $.ajax({
+            type: "GET",
+            dataType: "xml",
+            url: "products.xml",
+        });
+
+        var categories = [];
+        var products = [];
+        
+        $.when(loadCategories, loadProducts).done(function(resCategories, resProducts) {
+            
+            $(resCategories[0]).find("Categories").each(function() {
+                categories.push({
+                    id: this.children[0].innerHTML,
+                    name: this.children[1].innerHTML.trim(),
+                    description: this.children[2].innerHTML.trim()
+                });
+            });
+
+            $(resProducts[0]).find("Products").each(function() {
+                products.push({
+                    id: this.children[0].innerHTML,
+                    name: this.children[1].innerHTML.trim(),
+                    categoryID: this.children[2].innerHTML,
+                    quantityPerUnit: this.children[3].innerHTML.trim(),
+                    unitPrice: this.children[4].innerHTML
+                });
+            });
+
+            var treeData = [];
+            for (var i = 0; i < categories.length; ++i) {
+                var category = categories[i];
+                var children = [];
+                for (var j = 0; j < products.length; ++j) {
+                    var product = products[j];
+                    if (product.categoryID == category.id) {
+                        children.push({
+                            title: product.name,
+                            key: product.id,
+                            data: product
+                        });
+                    }
+                }
+                treeData.push({
+                    title: category.name,
+                    key: category.id,
+                    folder: true,
+                    data: category,
+                    children: children
+                });
+            }
+                        
+            var rootKey = "ROOT";
+            var rootTreeNode = {
+                title: "Product List",
+                key: rootKey,
+                folder: true,
+                children: treeData
+            };
+                        
+            $("#tree").fancytree({
+                extensions: ["glyph"],
+                source: [rootTreeNode],
+                selectMode: 1,
+                cache: false,
+                glyph: {
+                    map: {
+                        doc: "fa fa-file-o",
+                        docOpen: "fa fa-file-o",
+                        checkbox: "fa fa-square-o",
+                        checkboxSelected: "fa fa-check-square-o",
+                        checkboxUnknown: "fa fa-square",
+                        dragHelper: "fa arrow-right",
+                        dropMarker: "fa long-arrow-right",
+                        error: "fa fa-warning",
+                        expanderClosed: "fa fa-plus-square-o",
+                        expanderLazy: "fa fa-angle-right",
+                        expanderOpen: "fa fa-minus-square-o",
+                        folder: "fa fa-folder-o",
+                        folderOpen: "fa fa-folder-open-o",
+                        loading: "fa fa-spinner fa-pulse"
+                    }
+                },
+                click: function(event, data) {
+                    var node = data.node;					
+                    if (data.targetType == "title" && node.key != rootKey) {
+                        if (node.folder) {
+                            alertify.alert(node.data.description).setHeader("<h2>" + node.title + "</h2>");
+                        } else {
+                            alertify.alert('<b>Price: </b>' +node.data.unitPrice+
+							'<br><b>Description: </b>'+node.data.quantityPerUnit).setHeader("<h2>" + node.title + "</h2>");
+                        }
+                    }
+                },
+            });
+        });
+    });
+});
+	</script>
+<title>Treeview</title></head>
+<header><h1>A Clickable Product Category (Tree) Using XML/AJAX</h1></header>
+<body>
+<article>
+<h1>Load Treeview<hr></h1>
+<div class="btn-group">  
+  <button onclick="window.location.href='index.html'">Home</button>
+  <button onclick="window.location.href='array.html'">Load array</button>
+  <button class="active" onclick="window.location.href='treeview.html'">Load treeview</button>
+</div>
+<div class="tabBody">    
+<h2>Click button below to show the tree</h2>
+    <button id="load-data">Load treeview</button>
+    <hr>    
+    <div id="tree"></div>
+	
+</div>
+</article>
+<footer>
+<h2 title="student no. 12627360">&#169; Il Sun Choi 2018</h2>
+</footer>
+</body>
+</html>
